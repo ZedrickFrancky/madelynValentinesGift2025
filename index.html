@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Valentines Gift</title>
+    <style>
+        /* YOUR EXISTING CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(107,9,121,1) 35%, rgba(255,0,211,1) 100%);
+            font-family: 'Arial', sans-serif;
+        }
+
+        #card {
+            width: 90vmin;
+            height: 90vmin;
+            max-width: 600px;
+            max-height: 600px;
+            background: rgba(253, 255, 237, 0.4);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lock-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+            transition: all 1s ease;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .flower-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 80%;
+            margin-top: 15%;
+        }
+
+        .flower {
+            position: relative;
+            width: 45%;
+            height: 45%;
+            min-width: 180px;
+            min-height: 180px;
+            margin-bottom: 30px;
+        }
+
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 35%;
+            height:50%;
+            background: #ffd700;
+            border-radius: 1000%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+            animation: center-float 3.5s ease-in-out infinite;
+        }
+
+        .petal {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            width: 35%;
+            height: 60%;
+            background: linear-gradient(to bottom, #ff69b4, #ff1493);
+            border-radius: 50% 50% 40% 40%;
+            transform-origin: bottom center;
+            transform: 
+                translate(-50%, -50%)
+                rotate(var(--angle))
+                translateY(-30%);
+            animation: float 3.5s ease-in-out infinite;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .romantic-text {
+            font-size: 3vmin;
+            color: #800080;
+            text-align: center;
+            margin: 11vmin 0;
+            opacity: 0;
+            animation: fadeIn 1s ease 1s forwards;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            line-height: 1.4;
+            max-width: 80%;
+        }
+
+        .next-button {
+            padding: 2vmin 5vmin;
+            font-size: 2.5vmin;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.5s forwards;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: 
+                    translate(-50%, -50%)
+                    rotate(var(--angle))
+                    translateY(-30%);
+                filter: brightness(100%);
+            }
+            50% { 
+                transform: 
+                    translate(-50%, -50%)
+                    rotate(var(--angle))
+                    translateY(-40%);
+                filter: brightness(120%);
+            }
+        }
+
+        @keyframes center-float {
+            0%, 100% { 
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input {
+            padding: 2vmin;
+            margin: 3vmin 0;
+            width: 50%;
+            max-width: 250px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 2px solid rgba(255, 20, 147, 0.4);
+            border-radius: 1vmin;
+            color: white;
+            font-size: 2.5vmin;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        button {
+            padding: 2vmin 4vmin;
+            background: rgba(255, 20, 147, 0.5);
+            color: white;
+            border: none;
+            border-radius: 1vmin;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: rgba(199, 21, 133, 0.7);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .visible {
+            display: flex;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* NEW SLIDESHOW STYLES */
+        .memory-container {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            display: none;
+            margin: 10%;        
+        }
+
+        .memory-img {
+            position: absolute;
+            width: 70%;
+            height: auto;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            border-radius: 10%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            transition: opacity 1s ease;
+        }
+
+        .memory-img.active {
+            opacity: 1;
+        }
+
+        .card-expanded {
+            height: 120vmin;
+            transition: all 1s ease;
+        }
+
+        audio { display: none; }
+
+        .text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    text-align: center;
+    position: absolute;
+    bottom: 5%; /* Positions it near the bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    font-size: 2vmin;
+    font-weight: bold;
+    color: #800080;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+.text-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#slideshow-text {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#text-next-button {
+    padding: 2vmin 4vmin;
+    background: rgba(255, 20, 147, 0.5);
+    color: white;
+    border: none;
+    border-radius: 1vmin;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    font-weight: bold;
+}
+
+#text-next-button:hover {
+    background: rgba(199, 21, 133, 0.8);
+    transform: scale(1.05);
+}
+
+
+    </style>
+</head>
+<body>
+    <div id="card">
+        <div class="lock-container">
+            <h2 style="color: white; margin-bottom: 2vmin;">Enter the Combination</h2>
+            <input type="password" id="combination" maxlength="6">
+            <br>
+            <button onclick="checkCombination()">Unlock</button>
+            <p id="message" style="color: white; height: 3vmin; margin: 2vmin 0;"></p>
+        </div>
+
+        <div class="flower-container hidden">
+            <div class="flower">
+                <div class="center"></div>
+                <div class="petal" style="--angle: 0deg"></div>
+                <div class="petal" style="--angle: 45deg"></div>
+                <div class="petal" style="--angle: 90deg"></div>
+                <div class="petal" style="--angle: 135deg"></div>
+                <div class="petal" style="--angle: 180deg"></div>
+                <div class="petal" style="--angle: 225deg"></div>
+                <div class="petal" style="--angle: 270deg"></div>
+                <div class="petal" style="--angle: 315deg"></div>
+            </div>
+            <p class="romantic-text">Ikaw ang natatangi, ika'y bulaklak na gandang pagmasdan habang nakangiti. 💕</p>
+            <button class="next-button">Next ➡️</button>
+        </div>
+
+        <!-- NEW MEMORY SECTION -->
+        <div class="memory-container">
+            <img src="memory1.jpg" class="memory-img">
+            <img src="memory2.jpg" class="memory-img">
+            <img src="memory3.jpg" class="memory-img">
+            <img src="memory4.jpg" class="memory-img">
+            <img src="memory5.jpg" class="memory-img">
+            <img src="memory6.jpg" class="memory-img">
+            <img src="memory7.jpg" class="memory-img">
+            <img src="memory8.jpg" class="memory-img">
+            <img src="memory9.jpg" class="memory-img">
+            <img src="memory10.jpg" class="memory-img">
+            <img src="memory11.jpg" class="memory-img">
+            <img src="memory12.jpg" class="memory-img">
+            <img src="memory13.jpg" class="memory-img">
+            <img src="memory14.jpg" class="memory-img">
+            <img src="memory15.jpg" class="memory-img">
+            <img src="memory16.jpg" class="memory-img">
+            <img src="memory17.jpg" class="memory-img">
+            <img src="memory18.jpg" class="memory-img">
+            <img src="memory19.jpg" class="memory-img">
+            <img src="memory20.jpg" class="memory-img">
+            <img src="memory21.jpg" class="memory-img">
+            <img src="memory22.jpg" class="memory-img">
+            <img src="memory23.jpg" class="memory-img">
+            <img src="memory24.jpg" class="memory-img">
+            <img src="memory25.jpg" class="memory-img">
+            <img src="memory26.jpg" class="memory-img">
+            <img src="memory27.jpg" class="memory-img">
+            <img src="memory28.jpg" class="memory-img">
+
+        </div>
+            <div class="text-container">
+                <p id="slideshow-text" class="romantic-text"></p>
+                <button id="text-next-button">Next ➡️</button>
+
+        </div>
+    </div>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="memoryAudio" src="your-song.mp3"></audio>
+
+    <script>
+        // YOUR EXISTING SCRIPT
+        function checkCombination() {
+            const correctCode = "042223";
+            const userInput = document.getElementById("combination").value;
+            const message = document.getElementById("message");
+            const lockContainer = document.querySelector(".lock-container");
+            const flowerContainer = document.querySelector(".flower-container");
+
+            if (userInput === correctCode) {
+                message.textContent = "✅ Unlocked!";
+                message.style.color = "#90EE90";
+
+                lockContainer.style.opacity = '0';
+                lockContainer.style.pointerEvents = 'none';
+
+                setTimeout(() => {
+                    flowerContainer.classList.remove('hidden');
+                    flowerContainer.classList.add('visible');
+                }, 500);
+
+            } else {
+                message.textContent = "❌ Incorrect code. Try again!";
+                message.style.color = "#FFB6C1";
+                document.getElementById("combination").value = "";
+            }
+        }
+
+        // NEW SLIDESHOW FUNCTIONALITY
+        document.querySelector('.next-button').addEventListener('click', function() {
+            // Play audio
+            const audio = document.getElementById('memoryAudio');
+            audio.play();
+            
+            // Expand card
+            const card = document.getElementById('card');
+            card.classList.add('card-expanded');
+            
+            // Hide flower container
+            document.querySelector('.flower-container').style.display = 'none';
+            
+            // Show memories
+            const memoryContainer = document.querySelector('.memory-container');
+            memoryContainer.style.display = 'block';
+            
+            // Start slideshow
+            const images = document.querySelectorAll('.memory-img');
+            let currentIndex = 0;
+            
+            // Show first image
+            images[currentIndex].classList.add('active');
+            
+            // Cycle images every 3 seconds
+            setInterval(() => {
+                images[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % images.length;
+                images[currentIndex].classList.add('active');
+            }, 2000);
+            document.querySelector('.next-button').addEventListener('click', function() {
+    const audio = document.getElementById('memoryAudio');
+    audio.play();
+    
+    const card = document.getElementById('card');
+    card.classList.add('card-expanded');
+    
+    document.querySelector('.flower-container').style.display = 'none';
+    
+    const memoryContainer = document.querySelector('.memory-container');
+    memoryContainer.style.display = 'block';
+    
+    const images = document.querySelectorAll('.memory-img');
+    let currentIndex = 0;
+    
+    // Show first image
+    images[currentIndex].classList.add('active');
+
+    setInterval(() => {
+        images[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % images.length;
+        images[currentIndex].classList.add('active');
+    }, 3000);
+});
+    // Show the text container when the first "Next" button is clicked
+    setTimeout(() => {
+        document.querySelector('.text-container').classList.add('visible');
+    }, 1000);
+});
+
+// TEXT CYCLING FUNCTIONALITY
+const textArray = [
+    "Mahal kita higit pa sa aking kayang ipahayag. 💖",
+    "Bawat alaala natin ay hinding-hindi ko malilimutan. 💕",
+    "Habang buhay kitang mamahalin, pangako ko yan. ❤️",
+    "Ikaw ang dahilan kung bakit mas makulay ang buhay ko. 🌈",
+    "Sa bawat tibok ng puso ko, pangalan mo ang sinisigaw nito. 💓",
+    "Walang araw na lumilipas na hindi kita iniisip. 💭",
+    "Ikaw ang aking inspirasyon sa lahat ng bagay. ✨",
+    "Hawak mo ang puso kong walang ibang hinangad kundi mahalin ka. 💞",
+    "Sa'yo ko lang natutunang magmahal nang totoo. 💗",
+    "Ang yakap mo ang tahanan ko. 🤗",
+    "Kahit anong mangyari, hindi kita iiwan. 🤞",
+    "Ang boses mo ang musika na gusto kong marinig araw-araw. 🎶",
+    "Ang mata mo ay parang mga bituin na nagbibigay liwanag sa buhay ko. ✨",
+    "Sapat na sa akin ang mahalin ka habambuhay. 💖",
+    "Kapag kasama kita, wala nang ibang mahalaga. 💑",
+    "Sa'yo ko nakita ang tunay na kahulugan ng pagmamahal. 💕",
+    "Ikaw ang prinsesa ng buhay ko, at ako ang iyong prinsipe. 👑",
+    "Ang pag-ibig ko sa'yo ay parang alon—hindi humihinto. 🌊",
+    "Mas mahalaga ka sa akin kaysa sa kahit anong kayamanan sa mundo. 💎",
+    "Ang bawat araw na kasama kita ay isang biyaya. 🙏",
+    "Ikaw ang dahilan kung bakit lagi akong nakangiti. 😊",
+    "Walang kahit anong distansya ang makakapigil sa pagmamahal ko sa'yo. 🌍",
+    "Ikaw ang hiling ko sa bawat bituin na aking nakikita. ⭐",
+    "Kapag wala ka, pakiramdam ko ay hindi kumpleto ang mundo ko. 💔",
+    "Ang puso ko ay pag-aari mo lamang, at walang iba. 🔐",
+    "Mahal kita sa bawat kahapon, ngayon, at bukas. ⏳",
+    "Ikaw ang kape ko sa umaga at bituin ko sa gabi. ☕🌙",
+    "Kahit hindi ko sabihin, sana nararamdaman mo kung gaano kita kamahal. ❤️",
+    "Ang bawat halik mo ay parang mahika na bumabalot sa akin. 😘",
+    "Hindi ko alam kung paano ko nagawang mabuhay nang wala ka dati. 🤷‍♂️",
+    "Sa bawat laban ng buhay, gusto kitang maging kakampi. 💪",
+    "Ikaw ang liwanag sa madilim kong mundo. 💡",
+    "Gusto kong hawakan ang kamay mo habang buhay. 🤝",
+    "Ang pagmamahal ko sa’yo ay walang hanggan, walang kundisyon. ♾️",
+    "Dahil sa’yo, naniwala akong totoo ang forever. 💍",
+    "Ikaw ang pinakamagandang nangyari sa buhay ko. 🌹",
+    "Hindi ko ipagpapalit ang kahit anong bagay sa mundong ito para sa’yo. 🥰",
+    "Ikaw ang panalangin kong sinagot ng Diyos. 🙌",
+    "Mas lalo kitang minamahal sa bawat araw na lumilipas. ❤️",
+    "Kahit anong pagsubok ang dumaan, kapit lang tayo sa isa’t isa. 💪",
+    "Hindi ko alam kung paano ipapaliwanag, pero mahal na mahal kita. 💗",
+    "Ang puso ko ay tanging para sa’yo lamang. 🔒",
+    "Sa isang mundong puno ng ingay, boses mo lang ang gusto kong marinig. 🎧",
+    "Ikaw ang dahilan kung bakit masaya at makulay ang buhay ko. 🌈",
+    "Ang pagmamahal ko sa’yo ay parang hangin—hindi mo man makita, pero ramdam mo. 🌬️",
+    "Pangako, ikaw lang ang mamahalin ko habambuhay. 🤞",
+    "Ang puso ko ay hindi titigil sa pagtibok para sa’yo. 💓",
+    "Ang ngiti mo ang dahilan kung bakit patuloy akong lumalaban. 😊",
+    "Kahit sa kabilang buhay, ikaw pa rin ang pipiliin ko. ♾️",
+    "Ang pagmamahal ko sa’yo ay hindi kayang sukatin ng kahit anong salita. 💕",
+    "HAPPY VALENTINES DAY LOVELOVE!"
+];
+
+let textIndex = 0;
+const textElement = document.getElementById("slideshow-text");
+const textButton = document.getElementById("text-next-button");
+
+textButton.addEventListener('click', function() {
+    textIndex = (textIndex + 1) % textArray.length;
+    textElement.style.opacity = 0;
+
+    setTimeout(() => {
+        textElement.textContent = textArray[textIndex];
+        textElement.style.opacity = 1;
+    }, 500);
+});
+    </script>
+</body>
+</html>
